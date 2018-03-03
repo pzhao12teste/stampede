@@ -12,6 +12,8 @@ before_cache:
 before_deploy:
 - echo "<settings><servers><server><id>ossrh-snapshot</id><username>\${env.MAVEN_DEPLOY_USER}</username><password>\${env.MAVEN_DEPLOY_PASS}</password></server><server><id>ossrh-release</id><username>\${env.MAVEN_DEPLOY_USER}</username><password>\${env.MAVEN_DEPLOY_PASS}</password></server></servers></settings>"
   > ~/settings.xml
+- export RELEASE_TAR_BZ2_FILE=$(ls torodb/target/dist/torodb-*-release.tar.bz2)
+- export RELEASE_ZIP_FILE=$(ls torodb/target/dist/torodb-*-release.zip)
 before_install:
 - if [ "$TRAVIS_OS_NAME" == "osx" ];        then sed -i '' 's/<gib.enabled>true/<gib.enabled>false/'
   $TRAVIS_BUILD_DIR/pom.xml;        else sed -i 's/<gib.enabled>true/<gib.enabled>false/'
@@ -38,8 +40,8 @@ cache:
   - $HOME/CACHE
 deploy:
 - file:
-  - torodb/target/dist/torodb.tar.bz2
-  - torodb/target/dist/torodb.zip
+  - ${RELEASE_TAR_BZ2_FILE}
+  - ${RELEASE_ZIP_FILE}
   true:
     jdk: oraclejdk8
     repo: torodb/torodb
